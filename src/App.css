@@ -1,4 +1,159 @@
 .App {
-  
+    overflow: hidden;
+    color: aliceblue;
 }
 
+.billboard {
+    height: 60vh;
+    width: 46vw;
+    min-width: 400px;
+    max-width: 1000px;
+    min-height: 450px;
+    max-height: 700px;
+
+    border: 5px solid;
+    border-radius: 20px;
+    padding: 2.5% 0;
+    box-sizing: border-box;
+
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+
+    background-color: var(--background-light);
+    z-index: 100;
+
+    animation: rgborder linear 10s alternate-reverse infinite;
+}
+
+.slim{
+    height: 80vh;
+    width: 30vw;
+    min-width: 400px;
+    max-width: 600px;
+    min-height: 450px;
+    max-height: 1200px;
+}
+
+#timer {
+    user-select: none;
+    fill: whitesmoke;
+    font-size: 3.25rem;
+    font-weight: 700;
+}
+
+.button {
+    padding: 1.5% 4%;
+    margin: 30px auto;
+    width: fit-content;
+
+    border: white solid 3px;
+    border-radius: 10px;
+
+    font-weight: 600;
+    font-size: 1.5rem;
+    text-align: center;
+
+    cursor: pointer;
+    user-select: none;
+
+    animation: rgborder linear 10s alternate-reverse infinite;
+
+    transition: scale 0.15s;
+}
+
+.button:hover {
+    scale: 1.05;
+    
+}
+
+.button:active {
+    scale: .95;
+    
+}
+
+@keyframes rgborder {
+
+    0%,
+    100% {
+        border-color: var(--color1);
+    }
+
+    33% {
+        border-color: var(--color2);
+    }
+
+    66% {
+        border-color: var(--color3);
+    }
+}
+
+@keyframes rgbstroke {
+
+    0%,
+    100% {
+        stroke: var(--color1);
+    }
+
+    33% {
+        stroke: var(--color2);
+    }
+
+    66% {
+        stroke: var(--color3);
+    }
+}
+
+
+.circular-progress-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.progress-ring-circle {
+    transition: stroke-dashoffset 0.35s;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+}
+
+.progress-ring-circle.background {
+    stroke: #777;
+}
+
+.progress-ring-circle.progress {
+    animation: rgbstroke linear 10s alternate-reverse infinite;
+}
+
+.progress-percentage {
+    font-size: 20px;
+    margin-top: 10px;
+}
+
+#colors, #options{
+    transition: scale .2s ease-in-out;
+}
+
+#colors:hover, #options:hover{
+    scale: 1.25;
+    cursor: pointer;
+}
+
+.clickable{
+    cursor: pointer;
+}
+
+.clickable:hover{
+    background-color: #fff2;
+}
+
+.clickable:active{
+    color: #222;
+    background-color: #fff8;
+}

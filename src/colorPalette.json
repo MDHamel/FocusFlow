@@ -1,0 +1,43 @@
+[
+    {
+      "name": "Fantasy",
+      "colors": ["#2dcf8e", "#4094F5", "#8263f2"]
+    },
+    {
+      "name": "Ocean Blue",
+      "colors": ["#0E5ED6", "#4F8DFF", "#cadaff"]
+    },
+    {
+      "name": "Aurora",
+      "colors": ["#47F7B0", "#62EB90", "#99F591"]
+    },
+    {
+      "name": "Winter",
+      "colors": ["#58A6FF", "#7FC4FC", "#D1EEFF"]
+    },
+    {
+      "name": "Spring",
+      "colors": [ "#6ABDF5", "#FDE578", "#78EC78"]
+    },
+    {
+      "name": "Summer",
+      "colors": ["#FF746A", "#F3BC57", "#A4F178"]
+    },
+    {
+      "name": "Autumn",
+      "colors": ["#EC4848", "#F17646", "#F2B463"]
+    },
+    {
+      "name": "Purple Dream",
+      "colors": ["#6E5FF5", "#FD74DF", "#907AF3"]
+    },
+    {
+      "name": "Cotton Candy",
+      "colors": ["#F8A4EA", "#BFD4EB",  "#55BBFF"]
+    },
+    {
+      "name": "Brooding",
+      "colors": ["#A02E2E", "#E74D4D", "#835454"]
+    }
+  ]
+  

@@ -1,6 +1,7 @@
 .App {
     overflow: hidden;
     color: aliceblue;
+    height: 100vh;
 }
 
 .billboard {
@@ -8,7 +9,7 @@
     width: 46vw;
     min-width: 400px;
     max-width: 1000px;
-    min-height: 450px;
+    min-height: 520px;
     max-height: 700px;
 
     border: 5px solid;
@@ -38,43 +39,34 @@
     max-width: 600px;
     min-height: 450px;
     max-height: 1200px;
+
+    background-color: var(--background);
+    
+
+    padding: 20px 0 0 0;
+    z-index: 1000;
+}
+
+.color-palette-container{
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 #timer {
     user-select: none;
     fill: whitesmoke;
-    font-size: 3.25rem;
-    font-weight: 700;
 }
 
 .button {
-    padding: 1.5% 4%;
-    margin: 30px auto;
     width: fit-content;
 
     border: white solid 3px;
     border-radius: 10px;
 
-    font-weight: 600;
-    font-size: 1.5rem;
-    text-align: center;
-
     cursor: pointer;
     user-select: none;
 
     animation: rgborder linear 10s alternate-reverse infinite;
-
-    transition: scale 0.15s;
-}
-
-.button:hover {
-    scale: 1.05;
-    
-}
-
-.button:active {
-    scale: .95;
-    
 }
 
 @keyframes rgborder {
@@ -131,29 +123,47 @@
     animation: rgbstroke linear 10s alternate-reverse infinite;
 }
 
-.progress-percentage {
-    font-size: 20px;
-    margin-top: 10px;
-}
 
-#colors, #options{
-    transition: scale .2s ease-in-out;
-}
-
-#colors:hover, #options:hover{
-    scale: 1.25;
-    cursor: pointer;
-}
 
 .clickable{
     cursor: pointer;
+    transition: scale .15s ease-out;
 }
 
 .clickable:hover{
     background-color: #fff2;
+    scale: 1.1;
 }
 
 .clickable:active{
     color: #222;
     background-color: #fff8;
+    scale: .95;
+}
+
+.clickable.noscale{
+    scale: 1 !important;
+}
+
+.timeSettings{
+    width: 100%;
+    height: 2%;
+}
+
+.timeSettings label:not(input){
+    width: 80%;
+    position: relative;
+    margin: 4% 5%;
+    height: 20px;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.timeSettings input{
+    position: absolute;
+    right: 0;
+    height: 100%;
+    padding: 12px 5px;
+    font-size: 1rem;
+    border-radius: 7px;
 }

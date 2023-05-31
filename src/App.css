@@ -2,12 +2,30 @@
     overflow: hidden;
     color: aliceblue;
     height: 100vh;
+    background-color: var(--bg);
+}
+
+.dark{
+    --bg: #20272F;
+    --bg-d: #383A3F;
+    --hover: #fff3;
+    --active: #fffa;
+    --color: #F0F8FF;
+}
+
+.light{
+    --bg: #FFF;
+    --bg-d: #F0F8FF;
+    --color: #313133;
+    --active: #097CFFE5;
+    --hover: rgba(54,123,252,0.58);
+
 }
 
 .billboard {
     height: 60vh;
-    width: 46vw;
-    min-width: 400px;
+    width: 45vw;
+    min-width: 750px;
     max-width: 1000px;
     min-height: 520px;
     max-height: 700px;
@@ -17,6 +35,9 @@
     padding: 2.5% 0;
     box-sizing: border-box;
 
+    background-color: var(--bg-d);
+    color: var(--color);
+
     position: fixed;
     top: 50%;
     left: 50%;
@@ -25,8 +46,6 @@
     display: flex;
     justify-content: space-between;
     flex-direction: column;
-
-    background-color: var(--background-light);
     z-index: 100;
 
     animation: rgborder linear 10s alternate-reverse infinite;
@@ -35,16 +54,13 @@
 .slim{
     height: 80vh;
     width: 30vw;
-    min-width: 400px;
+    min-width: 500px;
     max-width: 600px;
-    min-height: 450px;
-    max-height: 1200px;
-
-    background-color: var(--background);
-    
+    min-height: 675px;
+    max-height: 1200px;    
 
     padding: 20px 0 0 0;
-    z-index: 1000;
+    z-index: 3000;
 }
 
 .color-palette-container{
@@ -108,6 +124,9 @@
     align-items: center;
 }
 
+.progress-ring{
+    z-index: 1000;
+}
 
 .progress-ring-circle {
     transition: stroke-dashoffset 0.35s;
@@ -123,21 +142,19 @@
     animation: rgbstroke linear 10s alternate-reverse infinite;
 }
 
-
-
 .clickable{
     cursor: pointer;
     transition: scale .15s ease-out;
 }
 
 .clickable:hover{
-    background-color: #fff2;
+    background-color: var(--hover);
     scale: 1.1;
 }
 
 .clickable:active{
-    color: #222;
-    background-color: #fff8;
+    color: var(--bg) !important;
+    background-color: var(--active);
     scale: .95;
 }
 
@@ -145,25 +162,53 @@
     scale: 1 !important;
 }
 
-.timeSettings{
-    width: 100%;
-    height: 2%;
-}
-
-.timeSettings label:not(input){
-    width: 80%;
-    position: relative;
-    margin: 4% 5%;
-    height: 20px;
-    font-weight: 600;
-    font-size: 1.1rem;
-}
-
-.timeSettings input{
+.timeInput{
     position: absolute;
+
     right: 0;
-    height: 100%;
-    padding: 12px 5px;
-    font-size: 1rem;
-    border-radius: 7px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+
+    --size: 1.2rem;
+    padding: 2% 2%;
+    box-sizing: content-box;
+
+    height: var(--size);
+    width: 90px;
+
+    font-size: var(--size);
+    line-height: var(--size);
+    
+    
+    border: white solid 1px;
+    
+    background-color: #333;
+    color: aliceblue !important;
 }
+
+.timeInput span{
+    display: inline-block;
+    width: 100%;
+    overflow: hidden;
+    text-align: right;
+    direction: rtl;
+}
+
+
+.timeInput span:focus {
+    outline: none;
+}
+
+
+#seconds [contenteditable]:empty::before{
+    content: "00";
+    color: gray;
+
+}
+
+#minutes [contenteditable]:empty::before{
+    content: "0";
+    color: gray;
+}
+

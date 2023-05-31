@@ -1,13 +1,14 @@
 import Waves from "./Waves";
 import "./App.css";
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import colorPalette from "./colorPalette.json";
 
 import press from "./audio/press.wav"
 import alarm from "./audio/alarm.wav"
+import TimeInput from "./TimeInput";
 
 function formatTimeDisplay(time) {
-  const minutes = Math.floor(time / 60).toString().padStart(2, '0');
+  const minutes = Math.floor(time / 60).toString();
   const seconds = (time % 60).toString().padStart(2, '0');
   return `${minutes}:${seconds}`;
 }
@@ -40,6 +41,7 @@ function App() {
   const [longBreakTime, setLongBreakTime] = useState(getCookieValue('longBreakTime') || 900);
 
   const palette = colorPalette[paletteIndex].colors;
+  const [theme, setTheme] = useState(getCookieValue('theme') || "dark");
 
   const [onBreak, setOnBreak] = useState(false);
   const [timeDisplay, setTimeDisplay] = useState(formatTimeDisplay(workTime));
@@ -87,7 +89,7 @@ function App() {
     setTimeDisplay(formatTimeDisplay(arr[0]));
   }
 
-  const resetCurrentTime = (shouldPlayAlarm = true) => {
+  const resetCurrentTime = useCallback((shouldPlayAlarm = true) => {
     let tempTime;
 
     if (onBreak) {
@@ -108,7 +110,7 @@ function App() {
     setTimeDisplay(formatTimeDisplay(tempTime));
     setCurrentSessionTime(tempTime);
     setOnBreak(prev => !prev);
-  };
+  }, [workTime, longBreakTime, shortBreakTime, onBreak, workCount]);
 
   useEffect(() => {
     let intervalId;
@@ -121,12 +123,12 @@ function App() {
   }, [timerRunning]);
 
   useEffect(() => {
-      if (currentTime < 0 && timerRunning) {
-        setTimerRunning(false);
-        resetCurrentTime();
-      }
+    if (currentTime < 0 && timerRunning) {
+      setTimerRunning(false);
+      resetCurrentTime();
+    }
     setTimeDisplay(formatTimeDisplay(currentTime));
-  }, [currentTime]);
+  }, [currentTime, resetCurrentTime, timerRunning]);
 
   const handleTimerButtonClick = () => {
     setTimerRunning((prevState) => !prevState);
@@ -148,22 +150,36 @@ function App() {
     setCookie('longBreakTime', longBreakTime);
   }, [longBreakTime]);
 
+  useEffect(() => {
+    setCookie('theme', theme);
+  }, [theme]);
+
+  useEffect(()=>{
+    if(timerRunning){
+      const doing = onBreak ? "Break" : "Working"
+
+      document.title = `${timeDisplay} - ${doing}`
+    }
+    else{
+      document.title = "Focus Flow"
+    }
+  }, [timerRunning, timeDisplay, onBreak])
+
 
   return (
-    <div className="App overflow-hidden" style={{
+    <div className={"App overflow-hidden w-100 h-100 " + theme} style={{
       "--color1": palette[0],
       "--color2": palette[1],
       "--color3": palette[2],
-
     }}>
 
       <Waves palette={palette} />
 
-      <section className="container billboard">
+      <section className={"container billboard " + theme}>
         <CircularBar percentage={-(currentTime / currentSessionTime)} time={timeDisplay} onClick={() => { playPressSound(); handleTimerButtonClick() }}>{timerRunning ? 'Pause' : 'Start'}</CircularBar>
         <h3 id="count" className="fw-bold text-center my-4">{sessionTitle} - #{workCount}</h3>
 
-        <OptionsMenu changeTime={setTimeChanges}/>
+        <OptionsMenu changeTime={setTimeChanges} changeTheme={setTheme}/>
         <ColorMenu setPalette={setPaletteIndex} />
 
         <SkipButtons skip={skip} reset={resetSession} visible={timerRunning} />
@@ -179,13 +195,13 @@ function App() {
 
 const SkipButtons = ({ skip, reset, visible }) => {
   return (
-    <div style={{ visibility: visible ? "visible" : "hidden", opacity: visible ? 1 : 0, transition: "all .25s ease-in-out" }}>
-      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-skip-end-btn-fill clickable rounded-circle position-absolute translate-middle-y" viewBox="0 0 16 16" style={{ zIndex: 200, top: "42%", right: "20%" }} onClick={skip}>
+    <div className="position-absolute w-75 h-50 mx-auto my-5 start-0 end-0 top-25" style={{ visibility: visible ? "visible" : "hidden", opacity: visible ? 1 : 0, transition: "all .25s ease-in-out", fill: "var(--color" }}>
+      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" className="bi bi-skip-end-btn-fill clickable rounded-circle position-absolute translate-middle-y end-0 top-50 mx-5 my-3" viewBox="0 0 16 16" style={{ zIndex: 200 }} onClick={skip}>
         <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
         <path d="M6.271 5.055a.5.5 0 0 1 .52.038L9.5 7.028V5.5a.5.5 0 0 1 1 0v5a.5.5 0 0 1-1 0V8.972l-2.71 1.935A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z" />
       </svg>
 
-      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-skip-end-btn-fill clickable rounded-circle position-absolute translate-middle-y" viewBox="0 0 16 16" style={{ zIndex: 200, top: "42%", left: "20%" }} onClick={reset}>
+      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" className="bi bi-skip-end-btn-fill clickable rounded-circle position-absolute translate-middle-y start-0 top-50 mx-5 my-3" viewBox="0 0 16 16" style={{ zIndex: 200 }} onClick={reset}>
         <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
         <path d="M10.229 5.055a.5.5 0 0 0-.52.038L7 7.028V5.5a.5.5 0 0 0-1 0v5a.5.5 0 0 0 1 0V8.972l2.71 1.935a.5.5 0 0 0 .79-.407v-5a.5.5 0 0 0-.271-.445z" />
       </svg>
@@ -239,7 +255,7 @@ const CircularBar = ({ percentage, time, onClick, children }) => {
         <text
           x="50%"
           y="48%"
-          color="white"
+          style={{ fill: "var(--color" }}
           className="progress-text display-3 fw-bold"
           id="timer"
           textAnchor="middle"
@@ -250,7 +266,7 @@ const CircularBar = ({ percentage, time, onClick, children }) => {
         <text
           x="50%"
           y="77.5%"
-          color="white"
+          style={{ fill: "var(--color" }}
           className="progress-text h3 fw-bold"
           id="timer"
           textAnchor="middle"
@@ -278,7 +294,7 @@ const ColorMenu = ({ setPalette }) => {
   return (
     <div>
       <div id="colors" className="position-absolute top-0 end-0  m-4 p-2 clickable rounded-circle" onClick={handleMenuClick}>
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" class="bi bi-palette-fill" viewBox="0 0 16 16">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" className="bi bi-palette-fill" viewBox="0 0 16 16" style={{ fill: "var(--color" }}>
           <path d="M12.433 10.07C14.133 10.585 16 11.15 16 8a8 8 0 1 0-8 8c1.996 0 1.826-1.504 1.649-3.08-.124-1.101-.252-2.237.351-2.92.465-.527 1.42-.237 2.433.07zM8 5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm4.5 3a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zM5 6.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm.5 6.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
         </svg>
       </div>
@@ -288,7 +304,7 @@ const ColorMenu = ({ setPalette }) => {
             {colorPalette.map((palette, index) => (
               <div key={index} className="color-palette clickable noscale pb-2" onClick={() => { setPalette(index) }}>
                 <hr className="mb-4 mt-0" />
-                <p className="text-center mb-4 text-lg h5">{palette.name}</p>
+                <p className="text-center mb-4 text-lg h5 fw-bold">{palette.name}</p>
                 <div className="color-boxes mb-2">
                   {palette.colors.map((color, colorIndex) => (
                     <div key={colorIndex} className="color-box p-2 mx-auto w-75" style={{ backgroundColor: color }}></div>
@@ -304,11 +320,17 @@ const ColorMenu = ({ setPalette }) => {
   );
 }
 
-const OptionsMenu = ({changeTime}) => {
+const OptionsMenu = ({ changeTime, changeTheme }) => {
+  const currentWorkTime = parseInt(getCookieValue("workTime"))
+  const currentShortBreakTime = parseInt(getCookieValue("shortBreakTime"))
+  const currentLongBreakTime = parseInt(getCookieValue("longBreakTime"))
+  const currentTheme = getCookieValue("theme") || "dark";
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [workTime, setWorkTime] = useState(getCookieValue("workTime"));
-  const [shortBreakTime, setShortBreakTime] = useState(getCookieValue("shortBreakTime"));
-  const [longBreakTime, setLongBreakTime] = useState(getCookieValue("longBreakTime"));
+  const [workTime, setWorkTime] = useState([Math.floor(currentWorkTime / 60), currentWorkTime % 60]);
+  const [shortBreakTime, setShortBreakTime] = useState([Math.floor(currentShortBreakTime / 60), currentShortBreakTime % 60]);
+  const [longBreakTime, setLongBreakTime] = useState([Math.floor(currentLongBreakTime / 60), currentLongBreakTime % 60]);
+  const [theme, setTheme] = useState(currentTheme);
 
   const handleMenuClick = () => {
     setIsMenuOpen(true);
@@ -316,22 +338,20 @@ const OptionsMenu = ({changeTime}) => {
 
   //send time changes to update times on timer, updates the cookies automatically
   const handleSave = () => {
-    changeTime([workTime,shortBreakTime,longBreakTime])
+    changeTime([workTime[0] * 60 + workTime[1], shortBreakTime[0] * 60 + shortBreakTime[1], longBreakTime[0] * 60 + longBreakTime[1]]);
+    changeTheme(theme);
     setIsMenuOpen(false);
-
   };
 
   const handleClose = () => {
     setIsMenuOpen(false);
   };
 
-  //only accept positive numbers
-  const handleNumberInputChange = (event, setValue) => {
-    const value = event.target.value;
-    if (/^\d*$/.test(value)) {
-      setValue(value);
-    }
-  };
+  const handleThemeChange = (e) => {
+    setTheme(e.target.value);
+  }
+
+
 
   return (
     <div>
@@ -344,7 +364,7 @@ const OptionsMenu = ({changeTime}) => {
           xmlns="http://www.w3.org/2000/svg"
           width="24"
           height="24"
-          fill="white"
+          style={{ fill: "var(--color" }}
           className="bi bi-gear-fill"
           viewBox="0 0 16 16"
         >
@@ -356,43 +376,55 @@ const OptionsMenu = ({changeTime}) => {
 
       {isMenuOpen && (
         <div className="billboard slim p-5">
-          <div className="timeSettings">
-            <div>
-              <p className="h3 text-center fw-bold mb-3">Time Settings</p>
-              <hr />
+          <section className="my-1">
+            <h3 className="text-center fw-bold mb-1">Theme</h3>
+            <hr />
+            <div className="d-flex justify-content-center pt-2" onChange={handleThemeChange}>
+              <label htmlFor="darkMode" >
+                <input
+                  type="radio"
+                  id="darkMode"
+                  name="theme"
+                  className="mx-3"
+                  value="dark"
+                  defaultChecked={currentTheme === "dark"}
+
+                />
+                Dark Mode
+              </label>
+
+              <label htmlFor="lightMode" >
+                <input
+                  type="radio"
+                  id="lightMode"
+                  name="theme"
+                  className="mx-3"
+                  value="light"
+                  defaultChecked={currentTheme !== "dark"}
+                  
+                />
+                Light Mode
+              </label>
             </div>
-            <label>
-              Work Time:
-              <input
-                type="text"
-                value={workTime}
-                onChange={(event) => handleNumberInputChange(event, setWorkTime)}
-              />
-            </label>
+          </section>
+          <section className="my-1">
+            <h3 className="text-center fw-bold mb-1">Time Settings</h3>
+            <hr />
 
-            <label>
-              Short Break Time:
-              <input
-                type="text"
-                value={shortBreakTime}
-                onChange={(event) => handleNumberInputChange(event, setShortBreakTime)}
-              />
-            </label>
 
-            <label>
-              Long Break Time:
-              <input
-                type="text"
-                value={longBreakTime}
-                onChange={(event) => handleNumberInputChange(event, setLongBreakTime)}
-              />
-            </label>
-          </div>
+            <h5 className="position-relative w-100 mx-2 p-3">Work Time <TimeInput prevMin={workTime[0]} prevSec={workTime[1]} onChange={setWorkTime} /></h5>
+
+            <h5 className="position-relative w-100 mx-2 p-3">Short Break Time: <TimeInput prevMin={shortBreakTime[0]} prevSec={shortBreakTime[1]} onChange={setShortBreakTime} /></h5>
+
+            <h5 className="position-relative w-100 mx-2 p-3">Long Break Time: <TimeInput prevMin={longBreakTime[0]} prevSec={longBreakTime[1]} onChange={setLongBreakTime} /></h5>
+
+          </section>
+
           <div className="d-flex justify-content-around">
-            <span className="button clickable h5 fw-bold my-4 px-3 py-2" onClick={handleSave}>
+            <span className="button clickable h6 fw-bold my-4 px-5 py-2" onClick={handleSave}>
               Save
             </span>
-            <span className="button clickable h5 fw-bold my-4 px-3 py-2" onClick={handleClose}>
+            <span className="button clickable h6 fw-bold my-4 px-5 py-2" onClick={handleClose}>
               Close
             </span>
           </div>
@@ -401,6 +433,7 @@ const OptionsMenu = ({changeTime}) => {
     </div>
   );
 };
+
 
 
 

@@ -1,15 +1,20 @@
 [
     {
       "name": "Fantasy",
-      "colors": ["#2dcf8e", "#4094F5", "#8263f2"]
+      "colors": ["#12DB8B", "#439BFF", "#8263f2"]
     },
     {
       "name": "Ocean Blue",
-      "colors": ["#0E5ED6", "#4F8DFF", "#cadaff"]
+      "colors": ["#0E5ED6", "#4F8DFF", "#A1BDFC"]
     },
     {
       "name": "Aurora",
-      "colors": ["#47F7B0", "#62EB90", "#99F591"]
+      "colors": ["#47F7B0", "#68EB94", "#99F591"]
+    },
+  
+    {
+      "name": "Watermelon",
+      "colors": ["#E96262",  "#71F183", "#06D66E"]
     },
     {
       "name": "Winter",
@@ -17,11 +22,11 @@
     },
     {
       "name": "Spring",
-      "colors": [ "#6ABDF5", "#FDE578", "#78EC78"]
+      "colors": [ "#F8D061", "#88FF64", "#FF7BB9"]
     },
     {
       "name": "Summer",
-      "colors": ["#FF746A", "#F3BC57", "#A4F178"]
+      "colors": [  "#F8CF5F", "#FFAA4D", "#FF9F60"]
     },
     {
       "name": "Autumn",
@@ -29,11 +34,15 @@
     },
     {
       "name": "Purple Dream",
-      "colors": ["#6E5FF5", "#FD74DF", "#907AF3"]
+      "colors": ["#6E5FF5", "#FF8DE6", "#907AF3"]
     },
     {
       "name": "Cotton Candy",
-      "colors": ["#F8A4EA", "#BFD4EB",  "#55BBFF"]
+      "colors": ["#FF8FEC", "#97D5FF",  "#3BB1FF"]
+    },
+    {
+      "name": "Forrest Grove",
+      "colors": [ "#286B5C", "#4DAF7C", "#9BCD9B"]
     },
     {
       "name": "Brooding",

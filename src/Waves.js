@@ -11,13 +11,13 @@ const waves = [
   {
     y: 0.4,
     length: 0.01,
-    amplitude: 42,
+    amplitude: 40,
     frequency: 1,
   },
   {
     y: 0.7,
     length: 0.01,
-    amplitude: 39,
+    amplitude: 35,
     frequency: 1.5,
   }
 ];
@@ -86,8 +86,9 @@ export default function Waves({ palette }) {
 
       const gradient = context.createLinearGradient(0, 0, 0, bottomWave.y);
       gradient.addColorStop(0, `${color}ff`);
-      gradient.addColorStop(0.45, `${color}e8`);
-      gradient.addColorStop(1, `${color}50`);
+      gradient.addColorStop(0.5, `${color}e5`);
+      gradient.addColorStop(0.85, `${color}a5`);
+      gradient.addColorStop(1, `${color}80`);
       context.fillStyle = gradient;
       context.fill();
     }

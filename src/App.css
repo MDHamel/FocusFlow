@@ -6,7 +6,7 @@
 }
 
 .dark{
-    --bg: #20272F;
+    --bg: #262A2E;
     --bg-d: #383A3F;
     --hover: #fff3;
     --active: #fffa;
@@ -14,11 +14,11 @@
 }
 
 .light{
-    --bg: #FFF;
-    --bg-d: #F0F8FF;
+    --bg: #EAECEE;
+    --bg-d: #EFF0F1;
     --color: #313133;
-    --active: #097CFFE5;
-    --hover: rgba(54,123,252,0.58);
+    --active: #097CFF;
+    --hover: #367BFC94;
 
 }
 
@@ -30,7 +30,7 @@
     min-height: 520px;
     max-height: 700px;
 
-    border: 5px solid;
+    border: 3px solid;
     border-radius: 20px;
     padding: 2.5% 0;
     box-sizing: border-box;
@@ -57,7 +57,10 @@
     min-width: 500px;
     max-width: 600px;
     min-height: 675px;
-    max-height: 1200px;    
+    max-height: 1200px;   
+    
+    border: 3px var(--color) solid;
+    animation: none;
 
     padding: 20px 0 0 0;
     z-index: 3000;
@@ -68,6 +71,26 @@
     overflow-x: hidden;
 }
 
+.clickable{
+    cursor: pointer;
+    transition: scale .15s ease-out;
+}
+
+.clickable:hover{
+    background-color: var(--hover);
+    scale: 1.1;
+}
+
+.clickable:active{
+    color: var(--bg) !important;
+    background-color: var(--active);
+    scale: .95;
+}
+
+.clickable.noscale{
+    scale: 1 !important;
+}
+
 #timer {
     user-select: none;
     fill: whitesmoke;
@@ -76,13 +99,22 @@
 .button {
     width: fit-content;
 
-    border: white solid 3px;
+    border: 3px var(--bg) solid;
     border-radius: 10px;
 
     cursor: pointer;
     user-select: none;
 
-    animation: rgborder linear 10s alternate-reverse infinite;
+    background-color: var(--color);
+    color: var(--bg);
+}
+
+.button:hover{
+    background-color: #3B97FF !important;
+}
+
+.button:active{
+    background-color: #0066FF !important;
 }
 
 @keyframes rgborder {
@@ -142,25 +174,7 @@
     animation: rgbstroke linear 10s alternate-reverse infinite;
 }
 
-.clickable{
-    cursor: pointer;
-    transition: scale .15s ease-out;
-}
 
-.clickable:hover{
-    background-color: var(--hover);
-    scale: 1.1;
-}
-
-.clickable:active{
-    color: var(--bg) !important;
-    background-color: var(--active);
-    scale: .95;
-}
-
-.clickable.noscale{
-    scale: 1 !important;
-}
 
 .timeInput{
     position: absolute;

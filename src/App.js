@@ -56,12 +56,19 @@ function App() {
   const alarmAudioRef = useRef(null);
 
   const playPressSound = () => {
+    pressAudioRef.current.volume = getCookieValue("sfxVolume") || 1;
+
     pressAudioRef.current.play();
   };
 
   const playAlarm = () => {
+    alarmAudioRef.current.volume = getCookieValue("alarmVolume") || .5;
+
     alarmAudioRef.current.play();
   };
+
+
+  
 
   const skip = () => {
     resetCurrentTime(false);
@@ -154,13 +161,13 @@ function App() {
     setCookie('theme', theme);
   }, [theme]);
 
-  useEffect(()=>{
-    if(timerRunning){
+  useEffect(() => {
+    if (timerRunning) {
       const doing = onBreak ? "Break" : "Working"
 
       document.title = `${timeDisplay} - ${doing}`
     }
-    else{
+    else {
       document.title = "Focus Flow"
     }
   }, [timerRunning, timeDisplay, onBreak])
@@ -179,8 +186,8 @@ function App() {
         <CircularBar percentage={-(currentTime / currentSessionTime)} time={timeDisplay} onClick={() => { playPressSound(); handleTimerButtonClick() }}>{timerRunning ? 'Pause' : 'Start'}</CircularBar>
         <h3 id="count" className="fw-bold text-center my-4">{sessionTitle} - #{workCount}</h3>
 
-        <OptionsMenu changeTime={setTimeChanges} changeTheme={setTheme}/>
-        <ColorMenu setPalette={setPaletteIndex} />
+        <OptionsMenu changeTime={setTimeChanges} />
+        <ColorMenu setPalette={setPaletteIndex} changeTheme={setTheme} />
 
         <SkipButtons skip={skip} reset={resetSession} visible={timerRunning} />
 
@@ -279,16 +286,25 @@ const CircularBar = ({ percentage, time, onClick, children }) => {
   );
 };
 
-const ColorMenu = ({ setPalette }) => {
+const ColorMenu = ({ setPalette, changeTheme }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const currentTheme = getCookieValue("theme") || "dark";
+
 
   const handleMenuClick = () => {
     setIsMenuOpen(true);
+
   };
 
   const handleCloseClick = () => {
     setIsMenuOpen(false);
+
   };
+
+  const handleThemeChange = (e) => {
+    changeTheme(e.target.value);
+  }
+
 
 
   return (
@@ -300,6 +316,39 @@ const ColorMenu = ({ setPalette }) => {
       </div>
       {isMenuOpen && (
         <div className="billboard slim">
+          <section className="my-1">
+            <h3 className="text-center fw-bold">Theme</h3>
+            <hr className="mb-4" />
+            <div className="d-flex justify-content-center p-3" onChange={handleThemeChange}>
+              <label htmlFor="darkMode" className="mx-4 h5 fw-bold">
+                <input
+                  type="radio"
+                  id="darkMode"
+                  name="theme"
+                  className="mx-2"
+                  value="dark"
+                  defaultChecked={currentTheme === "dark"}
+
+                />
+                Dark Mode
+              </label>
+
+              <br />
+
+              <label htmlFor="lightMode" className="mx-4  h5 fw-bold">
+                <input
+                  type="radio"
+                  id="lightMode"
+                  name="theme"
+                  className="mx-2"
+                  value="light"
+                  defaultChecked={currentTheme !== "dark"}
+
+                />
+                Light Mode
+              </label>
+            </div>
+          </section>
           <div className="color-palette-container mt-2 pb-5">
             {colorPalette.map((palette, index) => (
               <div key={index} className="color-palette clickable noscale pb-2" onClick={() => { setPalette(index) }}>
@@ -313,24 +362,30 @@ const ColorMenu = ({ setPalette }) => {
               </div>
             ))}
           </div>
-          <span className="button clickable h5 fw-bold my-4 px-3 py-2 mx-auto" onClick={handleCloseClick}>Close</span>
+          <div className="d-flex justify-content-around">
+            <span className="button clickable h6 fw-bold my-4 px-5 py-2" onClick={handleCloseClick}>
+              Close
+            </span>
+          </div>
         </div>
       )}
     </div>
   );
 }
 
-const OptionsMenu = ({ changeTime, changeTheme }) => {
+const OptionsMenu = ({ changeTime, setVolume }) => {
   const currentWorkTime = parseInt(getCookieValue("workTime"))
   const currentShortBreakTime = parseInt(getCookieValue("shortBreakTime"))
   const currentLongBreakTime = parseInt(getCookieValue("longBreakTime"))
-  const currentTheme = getCookieValue("theme") || "dark";
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [workTime, setWorkTime] = useState([Math.floor(currentWorkTime / 60), currentWorkTime % 60]);
   const [shortBreakTime, setShortBreakTime] = useState([Math.floor(currentShortBreakTime / 60), currentShortBreakTime % 60]);
   const [longBreakTime, setLongBreakTime] = useState([Math.floor(currentLongBreakTime / 60), currentLongBreakTime % 60]);
-  const [theme, setTheme] = useState(currentTheme);
+
+  const [alarmVol, setAlarmVolume] = useState(getCookieValue("alarmVolume") || 0.5);
+  const [sfxVol, setSFXVolume] = useState(getCookieValue("sfxVolume") || 0.5);
+
 
   const handleMenuClick = () => {
     setIsMenuOpen(true);
@@ -339,18 +394,14 @@ const OptionsMenu = ({ changeTime, changeTheme }) => {
   //send time changes to update times on timer, updates the cookies automatically
   const handleSave = () => {
     changeTime([workTime[0] * 60 + workTime[1], shortBreakTime[0] * 60 + shortBreakTime[1], longBreakTime[0] * 60 + longBreakTime[1]]);
-    changeTheme(theme);
+    setCookie("sfxVolume", sfxVol);
+    setCookie("alarmVolume", alarmVol);
     setIsMenuOpen(false);
   };
 
   const handleClose = () => {
     setIsMenuOpen(false);
   };
-
-  const handleThemeChange = (e) => {
-    setTheme(e.target.value);
-  }
-
 
 
   return (
@@ -376,39 +427,19 @@ const OptionsMenu = ({ changeTime, changeTheme }) => {
 
       {isMenuOpen && (
         <div className="billboard slim p-5">
-          <section className="my-1">
-            <h3 className="text-center fw-bold mb-1">Theme</h3>
+
+          <section>
+            <h3 className="text-center fw-bold">Volume</h3>
             <hr />
-            <div className="d-flex justify-content-center pt-2" onChange={handleThemeChange}>
-              <label htmlFor="darkMode" >
-                <input
-                  type="radio"
-                  id="darkMode"
-                  name="theme"
-                  className="mx-3"
-                  value="dark"
-                  defaultChecked={currentTheme === "dark"}
+            <label for="alarmvol" class="form-label">Alarm</label>
+            <input type="range" class="form-range" min="0" step={0.05} max="1" id="alarmvol" value={alarmVol} onChange={(e)=>{setAlarmVolume(e.target.value)}}/>
+            <label for="sfxvol" class="form-label">Sound Effects</label>
+            <input type="range" class="form-range" min="0" step={0.05} max="1" id="sfxvol" value={sfxVol} onChange={(e)=>{setSFXVolume(e.target.value)}}/>
 
-                />
-                Dark Mode
-              </label>
-
-              <label htmlFor="lightMode" >
-                <input
-                  type="radio"
-                  id="lightMode"
-                  name="theme"
-                  className="mx-3"
-                  value="light"
-                  defaultChecked={currentTheme !== "dark"}
-                  
-                />
-                Light Mode
-              </label>
-            </div>
           </section>
-          <section className="my-1">
-            <h3 className="text-center fw-bold mb-1">Time Settings</h3>
+
+          <section>
+            <h3 className="text-center fw-bold">Time Settings</h3>
             <hr />
 
 

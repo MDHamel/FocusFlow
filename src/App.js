@@ -234,8 +234,8 @@ const CircularBar = ({ percentage, time, onClick, children }) => {
 
   return (
 
-    <div className="circular-progress-bar" >
-      <svg className="progress-ring overflow-hidden rounded-circle clickable" width={svgSize} height={svgSize} onClick={onClick}>
+    <div className="circular-progress-bar mt-4" >
+      <svg className={`progress-ring overflow-hidden rounded-circle clickable ${children === "Start"?"pulse":""}`} width={svgSize} height={svgSize} onClick={onClick}>
         <circle
           className="progress-ring-circle background"
           strokeWidth={strokeWidth}
@@ -261,9 +261,9 @@ const CircularBar = ({ percentage, time, onClick, children }) => {
         />
         <text
           x="50%"
-          y="48%"
+          y="52%"
           style={{ fill: "var(--color" }}
-          className="progress-text display-3 fw-bold"
+          className="progress-text display-2 fw-bold"
           id="timer"
           textAnchor="middle"
           dominantBaseline="middle"
@@ -272,9 +272,10 @@ const CircularBar = ({ percentage, time, onClick, children }) => {
         </text>
         <text
           x="50%"
-          y="77.5%"
+          y="80%"
+          opacity={children === "Pause"?0:1}
           style={{ fill: "var(--color" }}
-          className="progress-text h3 fw-bold"
+          className="progress-text h3 fw-bold startpause"
           id="timer"
           textAnchor="middle"
           dominantBaseline="middle"
